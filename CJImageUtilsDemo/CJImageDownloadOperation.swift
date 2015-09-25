@@ -14,8 +14,12 @@ public enum ImageDownloadOperationErrorCode: Int {
     case InvalidURL = 20000
 }
 
-class CJImageDownloadOperation: NSObject, NSURLSessionTaskDelegate, CJImageRetrievalOperationProtocol{
+public typealias ProgressBlock = ((receivedSize:Int64, expectedSize:Int64)->Void)
+public typealias CompletionBlock = ((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)
+
+class CJImageDownloadOperation: NSObject, NSURLSessionTaskDelegate{
     
+    private static let ioQueueName = "com.jiecao.CJImageUtils.ImageDownloadOption.ioQueue"
     let ImageDownloadOperationErrorDomain = "com.jiecao.CJImageDownloaderOperation.Error"
     
     var responseData:NSMutableData = NSMutableData()
@@ -23,19 +27,38 @@ class CJImageDownloadOperation: NSObject, NSURLSessionTaskDelegate, CJImageRetri
     var sessionConfiguration = NSURLSessionConfiguration.ephemeralSessionConfiguration()
     var session:NSURLSession?
     var sessionDataTask:NSURLSessionDataTask?
-    var progressBlock:((receivedSize:Int64, expectedSize:Int64)->Void)?
-    var completionBlock:((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)?
+    var progressBlocks = [ProgressBlock]()
+    var completionBlocks = [CompletionBlock]()
     var shouldDecode:Bool = false
     var url:NSURL?
     var key:String?
+    private let ioQueue: dispatch_queue_t = dispatch_queue_create(ioQueueName, DISPATCH_QUEUE_SERIAL)
     
     init(url:NSURL, shouldDecode:Bool = true, progressBlock:((receivedSize:Int64, expectedSize:Int64)->Void)?, completionBlock:((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)?)
     {
         self.url = url
         self.key = CJImageUtilsManager.defaultKeyConverter(url)
-        self.progressBlock = progressBlock
-        self.completionBlock = completionBlock
+        
+        if (progressBlock != nil){
+            self.progressBlocks.append(progressBlock!)
+        }
+        if (completionBlock != nil){
+            self.completionBlocks.append(completionBlock!)
+        }
+        
         self.shouldDecode = shouldDecode
+    }
+    
+    func addProgressBlock(progressBlock:ProgressBlock){
+        dispatch_barrier_async(self.ioQueue, { () -> Void in
+            self.progressBlocks.append(progressBlock)
+        })
+    }
+    
+    func addCompletionBlock(completionBlock:CompletionBlock){
+        dispatch_barrier_async(self.ioQueue, { () -> Void in
+            self.completionBlocks.append(completionBlock)
+        })
     }
     
     func start() {
@@ -51,8 +74,13 @@ class CJImageDownloadOperation: NSObject, NSURLSessionTaskDelegate, CJImageRetri
                         }
                         
                     } else {
-                        if let completionCallback = self.completionBlock {
-                            completionCallback(image:image, data:self.responseData, error:nil, finished:true)
+                        if self.isCancelled == false{
+                            dispatch_async(self.ioQueue, { () -> Void in
+                                for completionBlock in self.completionBlocks {
+                                    completionBlock(image:image, data:self.responseData, error:nil, finished:true)
+                                }
+                                CJImageUtilsManager.sharedInstance.removeOperationForKey(url.absoluteString!)
+                            })
                         }
                     }
                 })
@@ -78,9 +106,12 @@ class CJImageDownloadOperation: NSObject, NSURLSessionTaskDelegate, CJImageRetri
         
         if let URL = dataTask.originalRequest.URL{
             responseData.appendData(data)
-            if let progressCallback = self.progressBlock{
-                progressCallback(receivedSize: Int64(responseData.length), expectedSize: dataTask.response!.expectedContentLength)
-            }
+            
+            dispatch_async(self.ioQueue, { () -> Void in
+                for progressBlock in self.progressBlocks {
+                    progressBlock(receivedSize: Int64(self.responseData.length), expectedSize: dataTask.response!.expectedContentLength)
+                }
+            })
         }
     }
     
@@ -89,39 +120,43 @@ class CJImageDownloadOperation: NSObject, NSURLSessionTaskDelegate, CJImageRetri
     */
     func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
         
-        if let URL = task.originalRequest.URL {
-            if let error = error,
-                let completionCallback = self.completionBlock {
-                    completionCallback(image: nil, data: nil, error: error, finished: true)
-            } else {
-                //Download finished without error
-                // We are on main queue when receiving this.
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                    
-                    if let image = UIImage(data: self.responseData) {
-                        CJImageCache.sharedInstance.storeImage(image, key: self.key!, imageData: nil, toFile: true, toMemoryCache: false, completionHandler: {()-> Void in
-                            if let completionCallback = self.completionBlock {
-                                let imageResult = self.shouldDecode ? CJImageUtils.DecodImage(image) :image
-                                completionCallback(image: imageResult, data:self.responseData, error:nil, finished:true)
-                            }
-                        })
-                        
-                    } else {
-                        // If server response is 304 (Not Modified), inform the callback handler with NotModified error.
-                        // It should be handled to get an image from cache, which is response of a manager object.
-                        var errorCode = ImageDownloadOperationErrorCode.BadData.rawValue;
-                        
-                        if let res = task.response as? NSHTTPURLResponse where res.statusCode == 304 {
-                            errorCode = ImageDownloadOperationErrorCode.NotModified.rawValue;
-                        }
-                        
-                        if let completionCallback = self.completionBlock {
-                            
-                            let error =  NSError(domain: self.ImageDownloadOperationErrorDomain, code: errorCode, userInfo: nil)
-                            completionCallback(image: nil, data: nil, error: error, finished:true)
-                        }
+        if let URL = task.originalRequest.URL where self.isCancelled == false {
+            if let error = error {
+                dispatch_async(self.ioQueue, { () -> Void in
+                    for completionBlock in self.completionBlocks {
+                        completionBlock(image:nil, data:nil, error:nil, finished:true)
                     }
+                    CJImageUtilsManager.sharedInstance.removeOperationForKey(URL.absoluteString!)
                 })
+            } else {
+                if let image = UIImage(data: self.responseData) {
+                    CJImageCache.sharedInstance.storeImage(image, key: self.key!, imageData: nil, toFile: true, toMemoryCache: true, completionHandler: {()-> Void in
+                        let imageResult = self.shouldDecode ? CJImageUtils.DecodImage(image) :image
+                        dispatch_async(self.ioQueue, { () -> Void in
+                            for completionBlock in self.completionBlocks {
+                                completionBlock(image:imageResult, data:self.responseData, error:nil, finished:true)
+                            }
+                            CJImageUtilsManager.sharedInstance.removeOperationForKey(URL.absoluteString!)
+                        })
+                    })
+                    
+                } else {
+                    // If server response is 304 (Not Modified), inform the callback handler with NotModified error.
+                    // It should be handled to get an image from cache, which is response of a manager object.
+                    var errorCode = ImageDownloadOperationErrorCode.BadData.rawValue;
+                    
+                    if let res = task.response as? NSHTTPURLResponse where res.statusCode == 304 {
+                        errorCode = ImageDownloadOperationErrorCode.NotModified.rawValue;
+                    }
+                    
+                    dispatch_async(self.ioQueue, { () -> Void in
+                        let error =  NSError(domain: self.ImageDownloadOperationErrorDomain, code: errorCode, userInfo: nil)
+                        for completionBlock in self.completionBlocks {
+                            completionBlock(image: nil, data: nil, error: error, finished:true)
+                        }
+                        CJImageUtilsManager.sharedInstance.removeOperationForKey(URL.absoluteString!)
+                    })
+                }
             }
         }
     }

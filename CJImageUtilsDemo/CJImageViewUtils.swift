@@ -27,7 +27,7 @@ extension UIImageView{
     }
     
     func imageWithURL(url:NSURL){
-        CJImageUtilsManager.sharedInstance.retrieveImageFromUrl(url, option: CJImageOptions.SDWebImageRefreshCached, completionBlock: { (image, data, error, finished) -> Void in
+        CJImageUtilsManager.sharedInstance.retrieveImageFromUrl(url, option: CJImageOptions.CJImageOptionDefaultPriority, completionBlock: { (image, data, error, finished) -> Void in
             dispatch_async(dispatch_get_main_queue(), {()->Void in
                 self.image = image
             })},
@@ -36,7 +36,7 @@ extension UIImageView{
     
     func imageWithURLString(urlString:String){
         if let url = NSURL(string: urlString) {
-            CJImageUtilsManager.sharedInstance.retrieveImageFromUrl(url, option: CJImageOptions.SDWebImageRefreshCached, completionBlock: { (image, data, error, finished) -> Void in
+            CJImageUtilsManager.sharedInstance.retrieveImageFromUrl(url, option: CJImageOptions.CJImageOptionDefaultPriority, completionBlock: { (image, data, error, finished) -> Void in
                 dispatch_async(dispatch_get_main_queue(), {()->Void in
                     self.image = image
                 })},
