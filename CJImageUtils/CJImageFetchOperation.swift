@@ -123,7 +123,7 @@ class CJImageFetchOperation: NSObject, NSURLSessionTaskDelegate{
             } else {
                 if let image = UIImage(data: self.responseData) {
                     CJImageCache.sharedInstance.storeImage(image, key: self.key!, imageData: nil, cachePolicy:self.options.cachePolicy, completionHandler: {()-> Void in
-                        let imageResult = self.shouldDecode ? CJImageUtils.DecodImage(image) :image
+                        let imageResult = self.shouldDecode ? CJImageUtils.decodImage(image, scale: self.options.scale) :image
                         dispatch_async(self.ioQueue, { () -> Void in
                             for completionHandler in self.completionHandlers {
                                 completionHandler(image:imageResult, data:self.responseData, error:nil, finished:true)

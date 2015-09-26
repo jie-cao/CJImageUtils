@@ -18,7 +18,7 @@ class ViewController: UIViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
-        let url = NSURL(string: "http://ec2.images-amazon.com/images/I/71COQTGIb9L._AA1500_.jpg")
+        let url = NSURL(string: "http://my10online.com/wp-content/uploads/2011/09/4480604.jpg")
         imageView.imageWithURL(url!)
     }
 

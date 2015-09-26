@@ -98,7 +98,7 @@ class CJImageCache: NSObject {
             var result:UIImage? = nil
             if options.shouldDecode {
                 dispatch_async(self.processQueue, { () -> Void in
-                    result = CJImageUtils.DecodImage(image, scale: options.scale)
+                    result = CJImageUtils.decodImage(image, scale: options.scale)
                 })
             }
             
@@ -107,14 +107,14 @@ class CJImageCache: NSObject {
                 handler(result, .Memory)
             }
         } else {
-            //Begin to load image from disk
+    
             dispatch_async(ioQueue, { () -> Void in
                 
                 if let image = self.retrieveImageForFile(key, scale: options.scale) {
                     
                     if options.shouldDecode {
                         dispatch_async(self.processQueue, { () -> Void in
-                            let result = CJImageUtils.DecodImage(image, scale: options.scale)
+                            let result = CJImageUtils.decodImage(image, scale: options.scale)
                             self.storeImage(result!, key: key, cachePolicy: options.cachePolicy, completionHandler: nil)
                             
                             if let handler = completionHandler {
