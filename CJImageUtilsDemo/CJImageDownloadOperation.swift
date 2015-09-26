@@ -32,9 +32,11 @@ class CJImageDownloadOperation: NSObject, NSURLSessionTaskDelegate{
     var shouldDecode:Bool = false
     var url:NSURL?
     var key:String?
+    var options:CJImageFetchOptions!
+    
     private let ioQueue: dispatch_queue_t = dispatch_queue_create(ioQueueName, DISPATCH_QUEUE_SERIAL)
     
-    init(url:NSURL, shouldDecode:Bool = true, progressBlock:((receivedSize:Int64, expectedSize:Int64)->Void)?, completionBlock:((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)?)
+    init(url:NSURL, options:CJImageFetchOptions, progressBlock:((receivedSize:Int64, expectedSize:Int64)->Void)?, completionBlock:((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)?)
     {
         self.url = url
         self.key = CJImageUtilsManager.defaultKeyConverter(url)
@@ -46,7 +48,9 @@ class CJImageDownloadOperation: NSObject, NSURLSessionTaskDelegate{
             self.completionBlocks.append(completionBlock!)
         }
         
-        self.shouldDecode = shouldDecode
+        self.options = options
+        
+        self.shouldDecode = self.options.shouldDecode
     }
     
     func addProgressBlock(progressBlock:ProgressBlock){
@@ -64,8 +68,7 @@ class CJImageDownloadOperation: NSObject, NSURLSessionTaskDelegate{
     func start() {
         if let url = self.url,
             let key =  self.key{
-                let options = CJImageUtilsManagerOptions()
-                CJImageCache.sharedInstance.retrieveImageForKey(key, options: options, completionHandler:{(image:UIImage?, cacheType:CacheType!) -> Void in
+                CJImageCache.sharedInstance.retrieveImageForKey(key, options:options, completionHandler:{(image:UIImage?, cacheType:CacheType!) -> Void in
                     if image == nil && self.isCancelled == false{
                         self.session = NSURLSession(configuration: self.sessionConfiguration, delegate: self, delegateQueue: nil)
                         self.sessionDataTask = self.session?.dataTaskWithURL(url)
@@ -130,7 +133,7 @@ class CJImageDownloadOperation: NSObject, NSURLSessionTaskDelegate{
                 })
             } else {
                 if let image = UIImage(data: self.responseData) {
-                    CJImageCache.sharedInstance.storeImage(image, key: self.key!, imageData: nil, toFile: true, toMemoryCache: true, completionHandler: {()-> Void in
+                    CJImageCache.sharedInstance.storeImage(image, key: self.key!, imageData: nil, cachePolicy:self.options.cachePolicy, completionHandler: {()-> Void in
                         let imageResult = self.shouldDecode ? CJImageUtils.DecodImage(image) :image
                         dispatch_async(self.ioQueue, { () -> Void in
                             for completionBlock in self.completionBlocks {

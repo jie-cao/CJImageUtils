@@ -26,21 +26,17 @@ extension UIImageView{
         objc_setAssociatedObject(self, &lastURLKey, URL, objc_AssociationPolicy(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
     }
     
-    func imageWithURL(url:NSURL){
-        CJImageUtilsManager.sharedInstance.retrieveImageFromUrl(url, option: CJImageOptions.CJImageOptionDefaultPriority, completionBlock: { (image, data, error, finished) -> Void in
+    func imageWithURL(url:NSURL, options: CJImageFetchOptions? = nil){
+        CJImageUtilsManager.sharedInstance.retrieveImageFromUrl(url, options: options, completionBlock: { (image, data, error, finished) -> Void in
             dispatch_async(dispatch_get_main_queue(), {()->Void in
                 self.image = image
             })},
             progressBlock: nil);
     }
     
-    func imageWithURLString(urlString:String){
+    func imageWithURLString(urlString:String, options:CJImageFetchOptions? = nil){
         if let url = NSURL(string: urlString) {
-            CJImageUtilsManager.sharedInstance.retrieveImageFromUrl(url, option: CJImageOptions.CJImageOptionDefaultPriority, completionBlock: { (image, data, error, finished) -> Void in
-                dispatch_async(dispatch_get_main_queue(), {()->Void in
-                    self.image = image
-                })},
-                progressBlock: nil);
+            self.imageWithURL(url, options: options)
         }
     }
 }

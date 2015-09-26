@@ -88,7 +88,7 @@ class CJImageUtilsManager: NSObject {
         })
     }
     
-    func retrieveImageFromUrl(url:NSURL, option:CJImageOptions, completionBlock:((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)?, progressBlock:((receivedSize:Int64, expectedSize:Int64)->Void)?) -> String? {
+    func retrieveImageFromUrl(url:NSURL, options:CJImageFetchOptions? = nil, completionBlock:((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)?, progressBlock:((receivedSize:Int64, expectedSize:Int64)->Void)?) -> String? {
         
         if let imageDownloadOperation = self.fetchOperationForKey(url.absoluteString!){
             if progressBlock != nil {
@@ -99,9 +99,19 @@ class CJImageUtilsManager: NSObject {
             }
         } else {
             
-            var imageFetchOperation = CJImageDownloadOperation(url: url, shouldDecode: true, progressBlock: progressBlock, completionBlock: completionBlock)
+            var fetchOptios = options != nil ? options! : CJImageFetchOptions()
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+            var imageFetchOperation = CJImageDownloadOperation(url: url, options: fetchOptios, progressBlock: progressBlock, completionBlock: completionBlock)
+            
+            var downloadPriority:Int = DISPATCH_QUEUE_PRIORITY_DEFAULT
+            if fetchOptios.priority == .CJImageOptionHighPriority {
+                downloadPriority = DISPATCH_QUEUE_PRIORITY_HIGH
+            } else if fetchOptios.priority == .CJImageOptionLowPriority {
+                downloadPriority = DISPATCH_QUEUE_PRIORITY_LOW
+            }
+            
+            
+            dispatch_async(dispatch_get_global_queue(downloadPriority, 0), { () -> Void in
                 imageFetchOperation.start()
             })
         }

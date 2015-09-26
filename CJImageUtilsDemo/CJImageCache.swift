@@ -31,12 +31,12 @@ class CJImageCache: NSObject {
         filesFolder = (paths.first as! String).stringByAppendingPathComponent(cacheName)
     }
     
-    func storeImage(image:UIImage, key:String, imageData:NSData? = nil, toFile:Bool = true, toMemoryCache:Bool = true, completionHandler:(()-> Void)?){
-        if toMemoryCache {
+    func storeImage(image:UIImage, key:String, imageData:NSData? = nil, cachePolicy:CJImageCachePolicy, completionHandler:(()-> Void)?){
+        if cachePolicy == .CJImageOptionMemoryAndFileCache || cachePolicy == .CJImageOptionMemoryCacheOnly {
             self.memoryCache.setObject(image, forKey: key)
         }
         
-        if (toFile) {
+        if cachePolicy == .CJImageOptionMemoryAndFileCache || cachePolicy == .CJImageOptionFileCacheOnly {
             dispatch_async(ioQueue, {()-> Void in
                 var data:NSData?
                 if (CJImageUtils.isPNG(image, imageData: imageData)) {
@@ -63,7 +63,7 @@ class CJImageCache: NSObject {
         }
     }
     
-    func retrieveImageForKey(key: String, options:CJImageUtilsManagerOptions, completionHandler: ((UIImage?, CacheType!) -> Void)?) {
+    func retrieveImageForKey(key: String, options:CJImageFetchOptions, completionHandler: ((UIImage?, CacheType!) -> Void)?) {
         
             if let image = self.retrieveImageFromMemoryCache(key) {
                 
@@ -88,7 +88,7 @@ class CJImageCache: NSObject {
                         if options.shouldDecode {
                             dispatch_async(self.processQueue, { () -> Void in
                                 let result = CJImageUtils.DecodImage(image, scale: options.scale)
-                                self.storeImage(result!, key: key, toFile: false, completionHandler: nil)
+                                self.storeImage(result!, key: key, cachePolicy: options.cachePolicy, completionHandler: nil)
 
                                 if let handler = completionHandler {
                                         handler(result, .File)
@@ -96,7 +96,7 @@ class CJImageCache: NSObject {
                                 }
                             })
                         } else {
-                            self.storeImage(image, key: key, toFile: false, completionHandler: nil)
+                            self.storeImage(image, key: key, cachePolicy: options.cachePolicy, completionHandler: nil)
                             if let handler = completionHandler {
                                     handler(image, .File)
                             }
