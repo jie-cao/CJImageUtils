@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0551AA491BB73D9D0072BA32 /* CJImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA421BB73D9D0072BA32 /* CJImageCache.swift */; settings = {ASSET_TAGS = (); }; };
-		0551AA4A1BB73D9D0072BA32 /* CJImageFetchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA431BB73D9D0072BA32 /* CJImageFetchManager.swift */; settings = {ASSET_TAGS = (); }; };
-		0551AA4B1BB73D9D0072BA32 /* CJImageFetchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA441BB73D9D0072BA32 /* CJImageFetchOperation.swift */; settings = {ASSET_TAGS = (); }; };
-		0551AA4C1BB73D9D0072BA32 /* CJImageFetchOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA451BB73D9D0072BA32 /* CJImageFetchOptions.swift */; settings = {ASSET_TAGS = (); }; };
-		0551AA4D1BB73D9D0072BA32 /* CJImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA461BB73D9D0072BA32 /* CJImageUtils.swift */; settings = {ASSET_TAGS = (); }; };
-		0551AA4E1BB73D9D0072BA32 /* CJImageViewExtention.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA471BB73D9D0072BA32 /* CJImageViewExtention.swift */; settings = {ASSET_TAGS = (); }; };
-		0551AA4F1BB73D9D0072BA32 /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA481BB73D9D0072BA32 /* MD5.swift */; settings = {ASSET_TAGS = (); }; };
+		0551AA571BB73EA10072BA32 /* CJImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA501BB73EA10072BA32 /* CJImageCache.swift */; settings = {ASSET_TAGS = (); }; };
+		0551AA581BB73EA10072BA32 /* CJImageFetchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA511BB73EA10072BA32 /* CJImageFetchManager.swift */; settings = {ASSET_TAGS = (); }; };
+		0551AA591BB73EA10072BA32 /* CJImageFetchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA521BB73EA10072BA32 /* CJImageFetchOperation.swift */; settings = {ASSET_TAGS = (); }; };
+		0551AA5A1BB73EA10072BA32 /* CJImageFetchOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA531BB73EA10072BA32 /* CJImageFetchOptions.swift */; settings = {ASSET_TAGS = (); }; };
+		0551AA5B1BB73EA10072BA32 /* CJImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA541BB73EA10072BA32 /* CJImageUtils.swift */; settings = {ASSET_TAGS = (); }; };
+		0551AA5C1BB73EA10072BA32 /* CJImageViewExtention.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA551BB73EA10072BA32 /* CJImageViewExtention.swift */; settings = {ASSET_TAGS = (); }; };
+		0551AA5D1BB73EA10072BA32 /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA561BB73EA10072BA32 /* MD5.swift */; settings = {ASSET_TAGS = (); }; };
 		05DC04711BB1231800167DBA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DC04701BB1231800167DBA /* AppDelegate.swift */; };
 		05DC04731BB1231800167DBA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DC04721BB1231800167DBA /* ViewController.swift */; };
 		05DC04761BB1231800167DBA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 05DC04741BB1231800167DBA /* Main.storyboard */; };
@@ -34,13 +34,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0551AA421BB73D9D0072BA32 /* CJImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CJImageCache.swift; path = CJImageUtils/CJImageCache.swift; sourceTree = "<group>"; };
-		0551AA431BB73D9D0072BA32 /* CJImageFetchManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CJImageFetchManager.swift; path = CJImageUtils/CJImageFetchManager.swift; sourceTree = "<group>"; };
-		0551AA441BB73D9D0072BA32 /* CJImageFetchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CJImageFetchOperation.swift; path = CJImageUtils/CJImageFetchOperation.swift; sourceTree = "<group>"; };
-		0551AA451BB73D9D0072BA32 /* CJImageFetchOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CJImageFetchOptions.swift; path = CJImageUtils/CJImageFetchOptions.swift; sourceTree = "<group>"; };
-		0551AA461BB73D9D0072BA32 /* CJImageUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CJImageUtils.swift; path = CJImageUtils/CJImageUtils.swift; sourceTree = "<group>"; };
-		0551AA471BB73D9D0072BA32 /* CJImageViewExtention.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CJImageViewExtention.swift; path = CJImageUtils/CJImageViewExtention.swift; sourceTree = "<group>"; };
-		0551AA481BB73D9D0072BA32 /* MD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MD5.swift; path = CJImageUtils/MD5.swift; sourceTree = "<group>"; };
+		0551AA501BB73EA10072BA32 /* CJImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CJImageCache.swift; path = CJImageUtils/CJImageCache.swift; sourceTree = SOURCE_ROOT; };
+		0551AA511BB73EA10072BA32 /* CJImageFetchManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CJImageFetchManager.swift; path = CJImageUtils/CJImageFetchManager.swift; sourceTree = SOURCE_ROOT; };
+		0551AA521BB73EA10072BA32 /* CJImageFetchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CJImageFetchOperation.swift; path = CJImageUtils/CJImageFetchOperation.swift; sourceTree = SOURCE_ROOT; };
+		0551AA531BB73EA10072BA32 /* CJImageFetchOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CJImageFetchOptions.swift; path = CJImageUtils/CJImageFetchOptions.swift; sourceTree = SOURCE_ROOT; };
+		0551AA541BB73EA10072BA32 /* CJImageUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CJImageUtils.swift; path = CJImageUtils/CJImageUtils.swift; sourceTree = SOURCE_ROOT; };
+		0551AA551BB73EA10072BA32 /* CJImageViewExtention.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CJImageViewExtention.swift; path = CJImageUtils/CJImageViewExtention.swift; sourceTree = SOURCE_ROOT; };
+		0551AA561BB73EA10072BA32 /* MD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MD5.swift; path = CJImageUtils/MD5.swift; sourceTree = SOURCE_ROOT; };
 		05DC046B1BB1231800167DBA /* CJImageUtilsDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CJImageUtilsDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		05DC046F1BB1231800167DBA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		05DC04701BB1231800167DBA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -134,13 +134,13 @@
 		05DC04901BB1232100167DBA /* CJImageUtils */ = {
 			isa = PBXGroup;
 			children = (
-				0551AA421BB73D9D0072BA32 /* CJImageCache.swift */,
-				0551AA431BB73D9D0072BA32 /* CJImageFetchManager.swift */,
-				0551AA441BB73D9D0072BA32 /* CJImageFetchOperation.swift */,
-				0551AA451BB73D9D0072BA32 /* CJImageFetchOptions.swift */,
-				0551AA461BB73D9D0072BA32 /* CJImageUtils.swift */,
-				0551AA471BB73D9D0072BA32 /* CJImageViewExtention.swift */,
-				0551AA481BB73D9D0072BA32 /* MD5.swift */,
+				0551AA501BB73EA10072BA32 /* CJImageCache.swift */,
+				0551AA511BB73EA10072BA32 /* CJImageFetchManager.swift */,
+				0551AA521BB73EA10072BA32 /* CJImageFetchOperation.swift */,
+				0551AA531BB73EA10072BA32 /* CJImageFetchOptions.swift */,
+				0551AA541BB73EA10072BA32 /* CJImageUtils.swift */,
+				0551AA551BB73EA10072BA32 /* CJImageViewExtention.swift */,
+				0551AA561BB73EA10072BA32 /* MD5.swift */,
 			);
 			name = CJImageUtils;
 			sourceTree = "<group>";
@@ -248,14 +248,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				05DC04731BB1231800167DBA /* ViewController.swift in Sources */,
-				0551AA4B1BB73D9D0072BA32 /* CJImageFetchOperation.swift in Sources */,
-				0551AA4D1BB73D9D0072BA32 /* CJImageUtils.swift in Sources */,
-				0551AA4A1BB73D9D0072BA32 /* CJImageFetchManager.swift in Sources */,
+				0551AA591BB73EA10072BA32 /* CJImageFetchOperation.swift in Sources */,
+				0551AA5B1BB73EA10072BA32 /* CJImageUtils.swift in Sources */,
+				0551AA581BB73EA10072BA32 /* CJImageFetchManager.swift in Sources */,
 				05DC04711BB1231800167DBA /* AppDelegate.swift in Sources */,
-				0551AA4F1BB73D9D0072BA32 /* MD5.swift in Sources */,
-				0551AA4C1BB73D9D0072BA32 /* CJImageFetchOptions.swift in Sources */,
-				0551AA4E1BB73D9D0072BA32 /* CJImageViewExtention.swift in Sources */,
-				0551AA491BB73D9D0072BA32 /* CJImageCache.swift in Sources */,
+				0551AA5D1BB73EA10072BA32 /* MD5.swift in Sources */,
+				0551AA5A1BB73EA10072BA32 /* CJImageFetchOptions.swift in Sources */,
+				0551AA5C1BB73EA10072BA32 /* CJImageViewExtention.swift in Sources */,
+				0551AA571BB73EA10072BA32 /* CJImageCache.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
