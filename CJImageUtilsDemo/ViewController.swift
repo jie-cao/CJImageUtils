@@ -18,7 +18,8 @@ class ViewController: UIViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
-        imageView.imageWithURLString("http://ec2.images-amazon.com/images/I/71COQTGIb9L._AA1500_.jpg")
+        let url = NSURL(string: "http://ec2.images-amazon.com/images/I/71COQTGIb9L._AA1500_.jpg")
+        imageView.imageWithURL(url!)
     }
 
     override func didReceiveMemoryWarning() {

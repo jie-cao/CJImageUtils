@@ -1,8 +1,8 @@
 //
-//  CJImageDownloadOperation.swift
+//  CJImageFetchOperation.swift
 //  CJImageUtilsDemo
 //
-//  Created by Jie Cao on 9/22/15.
+//  Created by Jie Cao on 6/13/15.
 //  Copyright (c) 2015 JieCao. All rights reserved.
 //
 
@@ -14,10 +14,10 @@ public enum ImageDownloadOperationErrorCode: Int {
     case InvalidURL = 20000
 }
 
-public typealias ProgressBlock = ((receivedSize:Int64, expectedSize:Int64)->Void)
-public typealias CompletionBlock = ((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)
+public typealias ProgressHandler = ((receivedSize:Int64, expectedSize:Int64)->Void)
+public typealias CompletionHandler = ((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)
 
-class CJImageDownloadOperation: NSObject, NSURLSessionTaskDelegate{
+class CJImageFetchOperation: NSObject, NSURLSessionTaskDelegate{
     
     private static let ioQueueName = "com.jiecao.CJImageUtils.ImageDownloadOption.ioQueue"
     let ImageDownloadOperationErrorDomain = "com.jiecao.CJImageDownloaderOperation.Error"
@@ -27,8 +27,8 @@ class CJImageDownloadOperation: NSObject, NSURLSessionTaskDelegate{
     var sessionConfiguration = NSURLSessionConfiguration.ephemeralSessionConfiguration()
     var session:NSURLSession?
     var sessionDataTask:NSURLSessionDataTask?
-    var progressBlocks = [ProgressBlock]()
-    var completionBlocks = [CompletionBlock]()
+    var progressHandlers = [ProgressHandler]()
+    var completionHandlers = [CompletionHandler]()
     var shouldDecode:Bool = false
     var url:NSURL?
     var key:String?
@@ -36,16 +36,16 @@ class CJImageDownloadOperation: NSObject, NSURLSessionTaskDelegate{
     
     private let ioQueue: dispatch_queue_t = dispatch_queue_create(ioQueueName, DISPATCH_QUEUE_SERIAL)
     
-    init(url:NSURL, options:CJImageFetchOptions, progressBlock:((receivedSize:Int64, expectedSize:Int64)->Void)?, completionBlock:((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)?)
+    init(url:NSURL, options:CJImageFetchOptions, progressHandler:((receivedSize:Int64, expectedSize:Int64)->Void)?, completionHandler:((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)?)
     {
         self.url = url
-        self.key = CJImageUtilsManager.defaultKeyConverter(url)
+        self.key = CJImageFetchManager.defaultKeyConverter(url)
         
-        if (progressBlock != nil){
-            self.progressBlocks.append(progressBlock!)
+        if (progressHandler != nil){
+            self.progressHandlers.append(progressHandler!)
         }
-        if (completionBlock != nil){
-            self.completionBlocks.append(completionBlock!)
+        if (completionHandler != nil){
+            self.completionHandlers.append(completionHandler!)
         }
         
         self.options = options
@@ -53,15 +53,15 @@ class CJImageDownloadOperation: NSObject, NSURLSessionTaskDelegate{
         self.shouldDecode = self.options.shouldDecode
     }
     
-    func addProgressBlock(progressBlock:ProgressBlock){
+    func addProgressHandler(progressHandler:ProgressHandler){
         dispatch_barrier_async(self.ioQueue, { () -> Void in
-            self.progressBlocks.append(progressBlock)
+            self.progressHandlers.append(progressHandler)
         })
     }
     
-    func addCompletionBlock(completionBlock:CompletionBlock){
+    func addCompletionHandler(completionHandler:CompletionHandler){
         dispatch_barrier_async(self.ioQueue, { () -> Void in
-            self.completionBlocks.append(completionBlock)
+            self.completionHandlers.append(completionHandler)
         })
     }
     
@@ -79,10 +79,10 @@ class CJImageDownloadOperation: NSObject, NSURLSessionTaskDelegate{
                     } else {
                         if self.isCancelled == false{
                             dispatch_async(self.ioQueue, { () -> Void in
-                                for completionBlock in self.completionBlocks {
-                                    completionBlock(image:image, data:self.responseData, error:nil, finished:true)
+                                for completionHandler in self.completionHandlers {
+                                    completionHandler(image:image, data:self.responseData, error:nil, finished:true)
                                 }
-                                CJImageUtilsManager.sharedInstance.removeOperationForKey(url.absoluteString!)
+                                CJImageFetchManager.sharedInstance.removeOperationForKey(url.absoluteString)
                             })
                         }
                     }
@@ -94,52 +94,41 @@ class CJImageDownloadOperation: NSObject, NSURLSessionTaskDelegate{
         isCancelled = false
     }
     
-    /**
-    This method is exposed since the compiler requests. Do not call it.
-    */
     func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveResponse response: NSURLResponse, completionHandler: (NSURLSessionResponseDisposition) -> Void) {
         
         completionHandler(NSURLSessionResponseDisposition.Allow)
     }
     
-    /**
-    This method is exposed since the compiler requests. Do not call it.
-    */
     func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
         
-        if let URL = dataTask.originalRequest.URL{
             responseData.appendData(data)
             
             dispatch_async(self.ioQueue, { () -> Void in
-                for progressBlock in self.progressBlocks {
-                    progressBlock(receivedSize: Int64(self.responseData.length), expectedSize: dataTask.response!.expectedContentLength)
+                for progressHandler in self.progressHandlers {
+                    progressHandler(receivedSize: Int64(self.responseData.length), expectedSize: dataTask.response!.expectedContentLength)
                 }
             })
-        }
     }
     
-    /**
-    This method is exposed since the compiler requests. Do not call it.
-    */
     func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
         
-        if let URL = task.originalRequest.URL where self.isCancelled == false {
+        if let URL = task.originalRequest!.URL where self.isCancelled == false {
             if let error = error {
                 dispatch_async(self.ioQueue, { () -> Void in
-                    for completionBlock in self.completionBlocks {
-                        completionBlock(image:nil, data:nil, error:nil, finished:true)
+                    for completionHandler in self.completionHandlers {
+                        completionHandler(image:nil, data:nil, error:error, finished:true)
                     }
-                    CJImageUtilsManager.sharedInstance.removeOperationForKey(URL.absoluteString!)
+                    CJImageFetchManager.sharedInstance.removeOperationForKey(URL.absoluteString)
                 })
             } else {
                 if let image = UIImage(data: self.responseData) {
                     CJImageCache.sharedInstance.storeImage(image, key: self.key!, imageData: nil, cachePolicy:self.options.cachePolicy, completionHandler: {()-> Void in
                         let imageResult = self.shouldDecode ? CJImageUtils.DecodImage(image) :image
                         dispatch_async(self.ioQueue, { () -> Void in
-                            for completionBlock in self.completionBlocks {
-                                completionBlock(image:imageResult, data:self.responseData, error:nil, finished:true)
+                            for completionHandler in self.completionHandlers {
+                                completionHandler(image:imageResult, data:self.responseData, error:nil, finished:true)
                             }
-                            CJImageUtilsManager.sharedInstance.removeOperationForKey(URL.absoluteString!)
+                            CJImageFetchManager.sharedInstance.removeOperationForKey(URL.absoluteString)
                         })
                     })
                     
@@ -154,10 +143,10 @@ class CJImageDownloadOperation: NSObject, NSURLSessionTaskDelegate{
                     
                     dispatch_async(self.ioQueue, { () -> Void in
                         let error =  NSError(domain: self.ImageDownloadOperationErrorDomain, code: errorCode, userInfo: nil)
-                        for completionBlock in self.completionBlocks {
-                            completionBlock(image: nil, data: nil, error: error, finished:true)
+                        for completionHandler in self.completionHandlers {
+                            completionHandler(image: nil, data: nil, error: error, finished:true)
                         }
-                        CJImageUtilsManager.sharedInstance.removeOperationForKey(URL.absoluteString!)
+                        CJImageFetchManager.sharedInstance.removeOperationForKey(URL.absoluteString)
                     })
                 }
             }

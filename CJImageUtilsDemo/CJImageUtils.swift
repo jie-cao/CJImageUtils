@@ -2,7 +2,7 @@
 //  CJImageUtils.swift
 //  CJImageUtilsDemo
 //
-//  Created by Jie Cao on 9/22/15.
+//  Created by Jie Cao on 6/13/15.
 //  Copyright (c) 2015 JieCao. All rights reserved.
 //
 
