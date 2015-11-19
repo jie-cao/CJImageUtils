@@ -13,7 +13,7 @@ class CJImageFetchManager: NSObject {
     static let sharedInstance = CJImageFetchManager()
     
     var imageDownloadOperationQueue = [String:CJImageFetchOperation]()
-    private static let ioQueueName = "com.jiecao.CJImageUtils.ImageManager.ioQueue"
+    private static let ioQueueName = "com.jiecao.CJImageUtils.CJImageFetchManager.ioQueue"
     private let ioQueue: dispatch_queue_t = dispatch_queue_create(ioQueueName, DISPATCH_QUEUE_CONCURRENT)
     
     class func defaultKeyConverter(urlString:NSURL)->String?{
@@ -29,11 +29,9 @@ class CJImageFetchManager: NSObject {
         })
     }
     
-    func cancel(operationKey:String){
-        if let downloadOperation = self.fetchOperationForKey(operationKey){
-            downloadOperation.cancel()
-        }
-        self.removeOperationForKey(operationKey)
+    func cancel(operation:CJImageFetchOperation){
+        operation.cancel();
+        self.removeOperationForKey(operation.key!)
     }
     
     func fetchOperationForKey(key: String) -> CJImageFetchOperation? {
@@ -58,22 +56,24 @@ class CJImageFetchManager: NSObject {
         })
     }
     
-    func retrieveImageFromUrl(url:NSURL, options:CJImageFetchOptions? = nil, completionHandler:((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)?, progressHandler:((receivedSize:Int64, expectedSize:Int64)->Void)?) -> String? {
+    func retrieveImageFromUrl(url:NSURL, options:CJImageFetchOptions? = nil, completionHandler:((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)?, progressHandler:((receivedSize:Int64, expectedSize:Int64)->Void)?) -> CJImageFetchOperation? {
         
-        if let imageDownloadOperation = self.fetchOperationForKey(url.absoluteString){
+        if  let operationKey = CJImageFetchManager.defaultKeyConverter(url),
+            let imageDownloadOperation = self.fetchOperationForKey(operationKey){
             if progressHandler != nil {
                 imageDownloadOperation.addProgressHandler(progressHandler!)
             }
             if completionHandler != nil {
                 imageDownloadOperation.addCompletionHandler(completionHandler!)
             }
+            return imageDownloadOperation;
         } else {
             
             let fetchOptios = options != nil ? options! : CJImageFetchOptions()
             
             let imageFetchOperation = CJImageFetchOperation(url: url, options: fetchOptios, progressHandler: progressHandler, completionHandler: completionHandler)
             
-            self.addOperationForKey(url.absoluteString, operation: imageFetchOperation)
+            self.addOperationForKey(imageFetchOperation.key!, operation: imageFetchOperation)
             
             var downloadPriority:Int = DISPATCH_QUEUE_PRIORITY_DEFAULT
             if fetchOptios.priority == .HighPriority {
@@ -86,8 +86,8 @@ class CJImageFetchManager: NSObject {
             dispatch_async(dispatch_get_global_queue(downloadPriority, 0), { () -> Void in
                 imageFetchOperation.start()
             })
+            
+            return imageFetchOperation;
         }
-        
-        return url.absoluteString
     }
 }

@@ -28,5 +28,6 @@ class CJImageFetchOptions: NSObject {
     var priority:CJImageDownloadPriority = .DefaultPriority
     var cachePolicy:CJImageCachePolicy = .MemoryAndFileCache
     var shouldDecode: Bool = false
+    var requestCachePolicy : NSURLRequestCachePolicy = .UseProtocolCachePolicy;
     var scale: CGFloat = UIScreen.mainScreen().scale
 }

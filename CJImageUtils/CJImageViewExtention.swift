@@ -16,11 +16,11 @@ private var lastURLKey: Void?
 extension UIImageView{
     
     /// Get the image URL binded to this image view.
-    public func getFetchKey()-> NSString?{
-        return objc_getAssociatedObject(self, &lastURLKey) as? NSString
+    private func getFetchOperation()-> CJImageFetchOperation?{
+        return objc_getAssociatedObject(self, &lastURLKey) as? CJImageFetchOperation
     }
     
-    private func setFetchKey(key: NSString) {
+    private func setFetchOperation(key: CJImageFetchOperation) {
         objc_setAssociatedObject(self, &lastURLKey, key, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
     
@@ -47,7 +47,7 @@ extension UIImageView{
            progressHandler:ProgressHandler?,
         completionHandler:CompletionHandler?)
     {
-        if let fetchKey = CJImageFetchManager.sharedInstance.retrieveImageFromUrl(url, options: options, completionHandler: { (image, data, error, finished) -> Void in
+        if let operation = CJImageFetchManager.sharedInstance.retrieveImageFromUrl(url, options: options, completionHandler: { (image, data, error, finished) -> Void in
                 dispatch_async(dispatch_get_main_queue(), {()->Void in
                     self.image = image
                 })
@@ -56,13 +56,13 @@ extension UIImageView{
                 }
             },
             progressHandler: progressHandler) {
-                self.setFetchKey(fetchKey)
+                self.setFetchOperation(operation)
         }
     }
     
     func cancelImageFetch(){
-        if let fetchKey = self.getFetchKey(){
-            CJImageFetchManager.sharedInstance.removeOperationForKey(String(fetchKey))
+        if let operation = self.getFetchOperation(){
+            CJImageFetchManager.sharedInstance.cancel(operation);
         }
     }
     

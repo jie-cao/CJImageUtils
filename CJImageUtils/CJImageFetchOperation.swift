@@ -24,7 +24,7 @@ class CJImageFetchOperation: NSObject, NSURLSessionTaskDelegate{
     
     var responseData:NSMutableData = NSMutableData()
     var isCancelled:Bool = false
-    var sessionConfiguration = NSURLSessionConfiguration.ephemeralSessionConfiguration()
+    var sessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
     var session:NSURLSession?
     var sessionDataTask:NSURLSessionDataTask?
     var progressHandlers = [ProgressHandler]()
@@ -70,6 +70,7 @@ class CJImageFetchOperation: NSObject, NSURLSessionTaskDelegate{
             let key =  self.key{
                 CJImageCache.sharedInstance.retrieveImageForKey(key, options:options, completionHandler:{(image:UIImage?, cacheType:CacheType!) -> Void in
                     if image == nil && self.isCancelled == false{
+                        self.sessionConfiguration.requestCachePolicy = self.options.requestCachePolicy
                         self.session = NSURLSession(configuration: self.sessionConfiguration, delegate: self, delegateQueue: nil)
                         self.sessionDataTask = self.session?.dataTaskWithURL(url)
                         if let sessionTask = self.sessionDataTask {
