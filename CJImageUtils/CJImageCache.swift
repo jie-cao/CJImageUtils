@@ -20,6 +20,8 @@ class CJImageCache: NSObject {
     static let sharedInstance = CJImageCache()
     
     var maxCacheAge:NSTimeInterval = 60 * 60 * 24 * 7
+    /// The largest disk size can be taken for the cache. It is the total allocated size of cached files in bytes. Default is 0, which means no limit.
+    var maxDiskCacheSize: UInt = 0
     var memoryCache : NSCache = NSCache()
     var fileManager : NSFileManager = NSFileManager()
     var filesFolder : NSURL!
@@ -30,12 +32,13 @@ class CJImageCache: NSObject {
         super.init()
         let paths = NSSearchPathForDirectoriesInDomains(.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)
         filesFolder = NSURL(fileURLWithPath:paths.first!).URLByAppendingPathComponent(CJImageCache.cacheName)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "clearMemoryCache", name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "cleanExpiredDiskCache", name: UIApplicationWillTerminateNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("clearMemoryCache"), name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("cleanExpiredDiskCache"), name: UIApplicationWillTerminateNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("cleanExpiredDiskCache"), name: UIApplicationDidEnterBackgroundNotification, object: nil)
     }
     
     deinit{
-         NSNotificationCenter.defaultCenter().removeObserver(self)
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     func clearMemoryCache(){
@@ -52,6 +55,83 @@ class CJImageCache: NSObject {
                 try self.fileManager.createDirectoryAtPath(self.filesFolder.path!, withIntermediateDirectories: true, attributes: nil)
             } catch _ {
             }
+        })
+    }
+    
+    func backgroundCleanExpiredDiskCache() {
+        
+        
+        var backgroundTask: UIBackgroundTaskIdentifier!
+        
+        backgroundTask = UIApplication.sharedApplication().beginBackgroundTaskWithExpirationHandler { () -> Void in
+            UIApplication.sharedApplication().endBackgroundTask(backgroundTask)
+            backgroundTask = UIBackgroundTaskInvalid
+        }
+        
+        cleanExpiredDiskCacheWithCompletionHander { () -> () in
+            UIApplication.sharedApplication().endBackgroundTask(backgroundTask)
+            backgroundTask = UIBackgroundTaskInvalid
+        }
+    }
+    
+    func cleanExpiredDiskCacheWithCompletionHander(completionHandler: (()->())?) {
+        // Do things in cocurrent io queue
+        dispatch_async(ioQueue, { () -> Void in
+            let diskCacheURL = NSURL(fileURLWithPath: self.filesFolder.path!)
+            
+            let resourceKeys = [NSURLIsDirectoryKey, NSURLContentModificationDateKey, NSURLTotalFileAllocatedSizeKey]
+            let expiredDate = NSDate(timeIntervalSinceNow: -self.maxCacheAge)
+            var cachedFiles = [NSURL: [NSObject: AnyObject]]()
+            var URLsToDelete = [NSURL]()
+            
+            var diskCacheSize: UInt = 0
+            
+            if let fileEnumerator = self.fileManager.enumeratorAtURL(diskCacheURL,
+                includingPropertiesForKeys: resourceKeys,
+                options: NSDirectoryEnumerationOptions.SkipsHiddenFiles,
+                errorHandler: nil) {
+                    
+                    for fileURL in fileEnumerator.allObjects as! [NSURL] {
+                        
+                        do {
+                            let resourceValues = try fileURL.resourceValuesForKeys(resourceKeys)
+                            // If it is a Directory. Continue to next file URL.
+                            if let isDirectory = resourceValues[NSURLIsDirectoryKey] as? NSNumber {
+                                if isDirectory.boolValue {
+                                    continue
+                                }
+                            }
+                            
+                            // If this file is expired, add it to URLsToDelete
+                            if let modificationDate = resourceValues[NSURLContentModificationDateKey] as? NSDate {
+                                if modificationDate.laterDate(expiredDate) == expiredDate {
+                                    URLsToDelete.append(fileURL)
+                                    continue
+                                }
+                            }
+                            
+                            if let fileSize = resourceValues[NSURLTotalFileAllocatedSizeKey] as? NSNumber {
+                                diskCacheSize += fileSize.unsignedLongValue
+                                cachedFiles[fileURL] = resourceValues
+                            }
+                        } catch _ {
+                        }
+                        
+                    }
+            }
+            
+            for fileURL in URLsToDelete {
+                do {
+                    try self.fileManager.removeItemAtURL(fileURL)
+                } catch _ {
+                }
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                if let completionHandler = completionHandler {
+                    completionHandler()
+                }
+            })
         })
     }
     
@@ -107,7 +187,7 @@ class CJImageCache: NSObject {
                 handler(result, .Memory)
             }
         } else {
-    
+            
             dispatch_async(ioQueue, { () -> Void in
                 
                 if let image = self.retrieveImageForFile(key, scale: options.scale) {
