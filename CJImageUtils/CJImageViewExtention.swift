@@ -41,12 +41,23 @@ extension UIImageView{
         self.imageWithURL(url, options: options, placeholderImage: placeholderImage, progressHandler: progressHandler, completionHandler: nil)
     }
     
+    func imageWithURL(url:NSURL, options:CJImageFetchOptions?, completionHandler:CompletionHandler?)
+    {
+        self.imageWithURL(url, options: options, placeholderImage: nil, progressHandler: nil, completionHandler: completionHandler)
+    }
+    
+    func imageWithURL(url:NSURL, options:CJImageFetchOptions?, progressHandler:ProgressHandler?, completionHandler:CompletionHandler?)
+    {
+        self.imageWithURL(url, options: options, placeholderImage: nil, progressHandler: progressHandler, completionHandler: completionHandler)
+    }
+    
     func imageWithURL(url:NSURL,
                   options:CJImageFetchOptions?,
          placeholderImage:UIImage?,
            progressHandler:ProgressHandler?,
         completionHandler:CompletionHandler?)
     {
+        self.image = placeholderImage
         if let operation = CJImageFetchManager.sharedInstance.retrieveImageFromUrl(url, options: options, completionHandler: { (image, data, error, finished) -> Void in
                 dispatch_async(dispatch_get_main_queue(), {()->Void in
                     self.image = image
@@ -59,6 +70,7 @@ extension UIImageView{
                 self.setFetchOperation(operation)
         }
     }
+    
     
     func cancelImageFetch(){
         if let operation = self.getFetchOperation(){

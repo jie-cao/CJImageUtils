@@ -13,7 +13,7 @@ class CJImageFetchManager: NSObject {
     static let sharedInstance = CJImageFetchManager()
     
     var imageDownloadOperationQueue = [String:CJImageFetchOperation]()
-    private static let ioQueueName = "com.jiecao.CJImageUtils.CJImageFetchManager.ioQueue"
+    private static let ioQueueName = "com.jiecao.CJImageUtils.ImageFetchManager.ioQueue"
     private let ioQueue: dispatch_queue_t = dispatch_queue_create(ioQueueName, DISPATCH_QUEUE_CONCURRENT)
     
     class func defaultKeyConverter(urlString:NSURL)->String?{
