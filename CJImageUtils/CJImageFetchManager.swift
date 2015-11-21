@@ -58,6 +58,8 @@ class CJImageFetchManager: NSObject {
     
     func retrieveImageFromUrl(url:NSURL, options:CJImageFetchOptions? = nil, completionHandler:((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)?, progressHandler:((receivedSize:Int64, expectedSize:Int64)->Void)?) -> CJImageFetchOperation? {
         
+        //NSLog(@"Documents Directory: %@", [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject]);
+        
         if  let operationKey = CJImageFetchManager.defaultKeyConverter(url),
             let imageDownloadOperation = self.fetchOperationForKey(operationKey){
             if progressHandler != nil {

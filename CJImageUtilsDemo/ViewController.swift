@@ -10,17 +10,13 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var tableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
     }
     
-    override func viewWillAppear(animated: Bool) {
-        let url = NSURL(string: "http://my10online.com/wp-content/uploads/2011/09/4480604.jpg")
-        imageView.imageWithURL(url!)
-    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

@@ -7,13 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0551AA571BB73EA10072BA32 /* CJImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA501BB73EA10072BA32 /* CJImageCache.swift */; settings = {ASSET_TAGS = (); }; };
-		0551AA581BB73EA10072BA32 /* CJImageFetchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA511BB73EA10072BA32 /* CJImageFetchManager.swift */; settings = {ASSET_TAGS = (); }; };
-		0551AA591BB73EA10072BA32 /* CJImageFetchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA521BB73EA10072BA32 /* CJImageFetchOperation.swift */; settings = {ASSET_TAGS = (); }; };
-		0551AA5A1BB73EA10072BA32 /* CJImageFetchOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA531BB73EA10072BA32 /* CJImageFetchOptions.swift */; settings = {ASSET_TAGS = (); }; };
-		0551AA5B1BB73EA10072BA32 /* CJImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA541BB73EA10072BA32 /* CJImageUtils.swift */; settings = {ASSET_TAGS = (); }; };
-		0551AA5C1BB73EA10072BA32 /* CJImageViewExtention.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA551BB73EA10072BA32 /* CJImageViewExtention.swift */; settings = {ASSET_TAGS = (); }; };
-		0551AA5D1BB73EA10072BA32 /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA561BB73EA10072BA32 /* MD5.swift */; settings = {ASSET_TAGS = (); }; };
+		0551AA571BB73EA10072BA32 /* CJImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA501BB73EA10072BA32 /* CJImageCache.swift */; };
+		0551AA581BB73EA10072BA32 /* CJImageFetchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA511BB73EA10072BA32 /* CJImageFetchManager.swift */; };
+		0551AA591BB73EA10072BA32 /* CJImageFetchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA521BB73EA10072BA32 /* CJImageFetchOperation.swift */; };
+		0551AA5A1BB73EA10072BA32 /* CJImageFetchOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA531BB73EA10072BA32 /* CJImageFetchOptions.swift */; };
+		0551AA5B1BB73EA10072BA32 /* CJImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA541BB73EA10072BA32 /* CJImageUtils.swift */; };
+		0551AA5C1BB73EA10072BA32 /* CJImageViewExtention.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA551BB73EA10072BA32 /* CJImageViewExtention.swift */; };
+		0551AA5D1BB73EA10072BA32 /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0551AA561BB73EA10072BA32 /* MD5.swift */; };
+		05A4801E1C004E1300F2BA90 /* ImageTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A4801D1C004E1300F2BA90 /* ImageTableViewController.swift */; };
+		05A480201C004E5100F2BA90 /* ImageCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A4801F1C004E5100F2BA90 /* ImageCollectionViewController.swift */; };
+		05A480221C004E8B00F2BA90 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A480211C004E8B00F2BA90 /* ImageViewController.swift */; };
+		05A480261C00667200F2BA90 /* ImageCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A480251C00667200F2BA90 /* ImageCollectionCell.swift */; };
+		05A480281C00F83900F2BA90 /* placeholder.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 05A480271C00F83900F2BA90 /* placeholder.jpg */; };
+		05A4802A1C00FFB800F2BA90 /* ImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A480291C00FFB800F2BA90 /* ImageTableViewCell.swift */; };
 		05DC04711BB1231800167DBA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DC04701BB1231800167DBA /* AppDelegate.swift */; };
 		05DC04731BB1231800167DBA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DC04721BB1231800167DBA /* ViewController.swift */; };
 		05DC04761BB1231800167DBA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 05DC04741BB1231800167DBA /* Main.storyboard */; };
@@ -41,6 +47,12 @@
 		0551AA541BB73EA10072BA32 /* CJImageUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CJImageUtils.swift; path = CJImageUtils/CJImageUtils.swift; sourceTree = SOURCE_ROOT; };
 		0551AA551BB73EA10072BA32 /* CJImageViewExtention.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CJImageViewExtention.swift; path = CJImageUtils/CJImageViewExtention.swift; sourceTree = SOURCE_ROOT; };
 		0551AA561BB73EA10072BA32 /* MD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MD5.swift; path = CJImageUtils/MD5.swift; sourceTree = SOURCE_ROOT; };
+		05A4801D1C004E1300F2BA90 /* ImageTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageTableViewController.swift; sourceTree = "<group>"; };
+		05A4801F1C004E5100F2BA90 /* ImageCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewController.swift; sourceTree = "<group>"; };
+		05A480211C004E8B00F2BA90 /* ImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
+		05A480251C00667200F2BA90 /* ImageCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCollectionCell.swift; sourceTree = "<group>"; };
+		05A480271C00F83900F2BA90 /* placeholder.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = placeholder.jpg; sourceTree = "<group>"; };
+		05A480291C00FFB800F2BA90 /* ImageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageTableViewCell.swift; sourceTree = "<group>"; };
 		05DC046B1BB1231800167DBA /* CJImageUtilsDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CJImageUtilsDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		05DC046F1BB1231800167DBA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		05DC04701BB1231800167DBA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -78,7 +90,6 @@
 			children = (
 				05DC04951BB12F4900167DBA /* CoreGraphics.framework */,
 				05DC046D1BB1231800167DBA /* CJImageUtilsDemo */,
-				05DC04831BB1231800167DBA /* CJImageUtilsDemoTests */,
 				05DC046C1BB1231800167DBA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -98,6 +109,12 @@
 				05DC04901BB1232100167DBA /* CJImageUtils */,
 				05DC04701BB1231800167DBA /* AppDelegate.swift */,
 				05DC04721BB1231800167DBA /* ViewController.swift */,
+				05A4801D1C004E1300F2BA90 /* ImageTableViewController.swift */,
+				05A4801F1C004E5100F2BA90 /* ImageCollectionViewController.swift */,
+				05A480211C004E8B00F2BA90 /* ImageViewController.swift */,
+				05A480251C00667200F2BA90 /* ImageCollectionCell.swift */,
+				05A480291C00FFB800F2BA90 /* ImageTableViewCell.swift */,
+				05DC04831BB1231800167DBA /* CJImageUtilsDemoTests */,
 				05DC04741BB1231800167DBA /* Main.storyboard */,
 				05DC04771BB1231800167DBA /* Images.xcassets */,
 				05DC04791BB1231800167DBA /* LaunchScreen.xib */,
@@ -109,6 +126,7 @@
 		05DC046E1BB1231800167DBA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				05A480271C00F83900F2BA90 /* placeholder.jpg */,
 				05DC046F1BB1231800167DBA /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -121,7 +139,7 @@
 				05DC04841BB1231800167DBA /* Supporting Files */,
 			);
 			path = CJImageUtilsDemoTests;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		05DC04841BB1231800167DBA /* Supporting Files */ = {
 			isa = PBXGroup;
@@ -228,6 +246,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				05DC04761BB1231800167DBA /* Main.storyboard in Resources */,
+				05A480281C00F83900F2BA90 /* placeholder.jpg in Resources */,
 				05DC047B1BB1231800167DBA /* LaunchScreen.xib in Resources */,
 				05DC04781BB1231800167DBA /* Images.xcassets in Resources */,
 			);
@@ -249,12 +268,17 @@
 			files = (
 				05DC04731BB1231800167DBA /* ViewController.swift in Sources */,
 				0551AA591BB73EA10072BA32 /* CJImageFetchOperation.swift in Sources */,
+				05A480261C00667200F2BA90 /* ImageCollectionCell.swift in Sources */,
 				0551AA5B1BB73EA10072BA32 /* CJImageUtils.swift in Sources */,
 				0551AA581BB73EA10072BA32 /* CJImageFetchManager.swift in Sources */,
 				05DC04711BB1231800167DBA /* AppDelegate.swift in Sources */,
+				05A480201C004E5100F2BA90 /* ImageCollectionViewController.swift in Sources */,
+				05A4802A1C00FFB800F2BA90 /* ImageTableViewCell.swift in Sources */,
+				05A4801E1C004E1300F2BA90 /* ImageTableViewController.swift in Sources */,
 				0551AA5D1BB73EA10072BA32 /* MD5.swift in Sources */,
 				0551AA5A1BB73EA10072BA32 /* CJImageFetchOptions.swift in Sources */,
 				0551AA5C1BB73EA10072BA32 /* CJImageViewExtention.swift in Sources */,
+				05A480221C004E8B00F2BA90 /* ImageViewController.swift in Sources */,
 				0551AA571BB73EA10072BA32 /* CJImageCache.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
