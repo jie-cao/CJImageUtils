@@ -71,7 +71,6 @@ class ImageCollectionViewController: UIViewController, UICollectionViewDataSourc
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let data = self.dataSource[indexPath.row] as! [String :String]
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! ImageCollectionCell
-        cell.backgroundColor = UIColor.redColor()
         if let imageUrl = NSURL(string: data["url"]!){
             cell.imageView?.imageWithURL(imageUrl)
             cell.imageView?.contentMode = .ScaleAspectFill
