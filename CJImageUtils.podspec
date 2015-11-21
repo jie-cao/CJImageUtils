@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "CJImageUtils"
-  s.version          = "1.0.4"
+  s.version          = "1.0.5"
   s.summary          = "A lightweight library for downloading and caching image from the web. It is implemented purely in swift."
 
 # This description is used to generate tags and improve search results.
@@ -35,5 +35,5 @@ Pod::Spec.new do |s|
   #  'CJImageUtils' => ['Pod/Assets/*.png']
   #}
 
-  s.frameworks = 'Foundation', 'UIKit', 'ObjectiveC'
+  s.frameworks = 'Foundation', 'UIKit'
 end
