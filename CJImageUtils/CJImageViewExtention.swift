@@ -52,22 +52,25 @@ extension UIImageView{
     }
     
     func imageWithURL(url:NSURL,
-                  options:CJImageFetchOptions?,
-         placeholderImage:UIImage?,
-           progressHandler:ProgressHandler?,
+        options:CJImageFetchOptions?,
+        placeholderImage:UIImage?,
+        progressHandler:ProgressHandler?,
         completionHandler:CompletionHandler?)
     {
-        self.image = placeholderImage
-        if let operation = CJImageFetchManager.sharedInstance.retrieveImageFromUrl(url, options: options, completionHandler: { (image, data, error, finished) -> Void in
-                dispatch_async(dispatch_get_main_queue(), {()->Void in
-                    self.image = image
-                })
-                if let handler = completionHandler{
-                    handler(image: image, data: data, error: error, finished: finished)
-                }
+        if let operation = CJImageFetchManager.sharedInstance.retrieveImageFromUrl(url, options: options, completionHandler: { (image:UIImage?, data:NSData?, error:NSError?, finished:Bool) -> Void in
+            dispatch_async(dispatch_get_main_queue(), {()->Void in
+                self.image = image
+            })
+            if let handler = completionHandler{
+                handler(image: image, data: data, error: error, finished: finished)
+            }
             },
-            progressHandler: progressHandler) {
-                self.setFetchOperation(operation)
+            progressHandler: {(receivedSize:Int64, expectedSize:Int64) in
+                if let handler = progressHandler {
+                    handler(receivedSize: receivedSize, expectedSize: expectedSize)
+                }
+        }) {
+            self.setFetchOperation(operation)
         }
     }
     
