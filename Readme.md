@@ -18,8 +18,15 @@ CJImageUtils是一个轻量级的从网络下载图像并进行缓存的库。�
 #### Podfile
 ```
 platform :ios, '8.0'
+use_frameworks!
 pod 'CJImageUtils'
 ```
+然后在使用时，直接Import Framework就可以了  
+
+```swift
+import CJImageUtils
+```  
+
 ### 直接嵌入源代码
 CJImageUtils是一个开源库，可以从[这里](https://github.com/jie-cao/CJImageUtils)直接找到源代码并加入项目
 
