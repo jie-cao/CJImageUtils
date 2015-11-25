@@ -9,11 +9,11 @@
 import UIKit
 import CoreGraphics
 
-enum CacheType {
+public enum CacheType {
     case None, Memory, File
 }
 
-class CJImageCache: NSObject {
+public class CJImageCache: NSObject {
     private static let ioQueueName = "com.jiecao.CJImageUtils.ImageCache.ioQueue"
     private static let processQueueName = "com.jiecao.CJImageUtils.ImageCache.processQueue"
     private static let cacheName = "com.jiecao.CJImageUtils.ImageCache.CacheName"
@@ -41,11 +41,11 @@ class CJImageCache: NSObject {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-    func clearMemoryCache(){
+    public func clearMemoryCache(){
         memoryCache.removeAllObjects()
     }
     
-    func clearDiskCache(){
+    public func clearDiskCache(){
         dispatch_async(ioQueue, { () -> Void in
             do {
                 try self.fileManager.removeItemAtPath(self.filesFolder.path!)
@@ -135,7 +135,7 @@ class CJImageCache: NSObject {
         })
     }
     
-    func storeImage(image:UIImage, key:String, imageData:NSData? = nil, cachePolicy:CJImageCachePolicy, completionHandler:(()-> Void)?){
+    public func storeImage(image:UIImage, key:String, imageData:NSData? = nil, cachePolicy:CJImageCachePolicy, completionHandler:(()-> Void)?){
         if (cachePolicy.rawValue | CJImageCachePolicy.MemoryCache.rawValue) != 0 {
             self.memoryCache.setObject(image, forKey: key)
         }
@@ -170,7 +170,7 @@ class CJImageCache: NSObject {
         }
     }
     
-    func retrieveImageForKey(key: String, options:CJImageFetchOptions, completionHandler: ((UIImage?, CacheType!) -> Void)?) {
+    public func retrieveImageForKey(key: String, options:CJImageFetchOptions, completionHandler: ((UIImage?, CacheType!) -> Void)?) {
         
         if let image = self.retrieveImageFromMemoryCache(key) {
             
@@ -219,11 +219,11 @@ class CJImageCache: NSObject {
         }
     }
     
-    func retrieveImageFromMemoryCache(key: String) -> UIImage? {
+    public func retrieveImageFromMemoryCache(key: String) -> UIImage? {
         return memoryCache.objectForKey(key) as? UIImage
     }
     
-    func retrieveImageForFile(key: String, scale: CGFloat = 1.0) -> UIImage? {
+    public func retrieveImageForFile(key: String, scale: CGFloat = 1.0) -> UIImage? {
         if let data = loadImageDataFromFile(key),
             let image = UIImage(data: data, scale: scale) {
                 return image
@@ -232,17 +232,17 @@ class CJImageCache: NSObject {
         }
     }
     
-    func loadImageDataFromFile(key: String) -> NSData? {
+    public func loadImageDataFromFile(key: String) -> NSData? {
         let filePath = cachePathForKey(key)
         return NSData(contentsOfFile: filePath)
     }
     
-    func cachePathForKey(key: String) -> String {
+    public func cachePathForKey(key: String) -> String {
         let fileName = cacheFileNameForKey(key)
         return self.filesFolder!.URLByAppendingPathComponent(fileName).path!
     }
     
-    func cacheFileNameForKey(key: String) -> String {
+    public func cacheFileNameForKey(key: String) -> String {
         return key.toMD5()
     }
 }

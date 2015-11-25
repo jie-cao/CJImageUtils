@@ -17,7 +17,7 @@ public enum ImageDownloadOperationErrorCode: Int {
 public typealias ProgressHandler = ((receivedSize:Int64, expectedSize:Int64)->Void)
 public typealias CompletionHandler = ((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)
 
-class CJImageFetchOperation: NSObject, NSURLSessionTaskDelegate{
+public class CJImageFetchOperation: NSObject, NSURLSessionTaskDelegate{
     
     private static let ioQueueName = "com.jiecao.CJImageUtils.ImageDownloadOption.ioQueue"
     let ImageDownloadOperationErrorDomain = "com.jiecao.CJImageDownloaderOperation.Error"
@@ -36,7 +36,7 @@ class CJImageFetchOperation: NSObject, NSURLSessionTaskDelegate{
     
     private let ioQueue: dispatch_queue_t = dispatch_queue_create(ioQueueName, DISPATCH_QUEUE_SERIAL)
     
-    init(url:NSURL, options:CJImageFetchOptions, progressHandler:((receivedSize:Int64, expectedSize:Int64)->Void)?, completionHandler:((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)?)
+    public init(url:NSURL, options:CJImageFetchOptions, progressHandler:((receivedSize:Int64, expectedSize:Int64)->Void)?, completionHandler:((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)?)
     {
         self.url = url
         self.key = CJImageFetchManager.defaultKeyConverter(url)
@@ -53,19 +53,19 @@ class CJImageFetchOperation: NSObject, NSURLSessionTaskDelegate{
         self.shouldDecode = self.options.shouldDecode
     }
     
-    func addProgressHandler(progressHandler:ProgressHandler){
+    public func addProgressHandler(progressHandler:ProgressHandler){
         dispatch_barrier_async(self.ioQueue, { () -> Void in
             self.progressHandlers.append(progressHandler)
         })
     }
     
-    func addCompletionHandler(completionHandler:CompletionHandler){
+    public func addCompletionHandler(completionHandler:CompletionHandler){
         dispatch_barrier_async(self.ioQueue, { () -> Void in
             self.completionHandlers.append(completionHandler)
         })
     }
     
-    func start() {
+    public func start() {
         if let url = self.url,
             let key =  self.key{
                 CJImageCache.sharedInstance.retrieveImageForKey(key, options:options, completionHandler:{(image:UIImage?, cacheType:CacheType!) -> Void in
@@ -91,16 +91,16 @@ class CJImageFetchOperation: NSObject, NSURLSessionTaskDelegate{
         }
     }
     
-    func cancel() {
+    public func cancel() {
         isCancelled = false
     }
     
-    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveResponse response: NSURLResponse, completionHandler: (NSURLSessionResponseDisposition) -> Void) {
+    public func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveResponse response: NSURLResponse, completionHandler: (NSURLSessionResponseDisposition) -> Void) {
         
         completionHandler(NSURLSessionResponseDisposition.Allow)
     }
     
-    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
+    public func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
         
             responseData.appendData(data)
             
@@ -111,7 +111,7 @@ class CJImageFetchOperation: NSObject, NSURLSessionTaskDelegate{
             })
     }
     
-    func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
+    public func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
         
         if let URL = task.originalRequest!.URL where self.isCancelled == false {
             if let error = error {

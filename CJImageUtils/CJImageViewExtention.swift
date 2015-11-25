@@ -13,7 +13,7 @@ import ObjectiveC
 // MARK: - Associated Key
 private var lastURLKey: Void?
 
-extension UIImageView{
+public extension UIImageView{
     
     /// Get the image URL binded to this image view.
     private func getFetchOperation()-> CJImageFetchOperation?{
@@ -24,34 +24,34 @@ extension UIImageView{
         objc_setAssociatedObject(self, &lastURLKey, key, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
     
-    func imageWithURL(url:NSURL){
+    public func imageWithURL(url:NSURL){
         let options = CJImageFetchOptions()
         self.imageWithURL(url, options: options, placeholderImage: nil, progressHandler: nil)
     }
     
-    func imageWithURL(url:NSURL, options: CJImageFetchOptions?){
+    public func imageWithURL(url:NSURL, options: CJImageFetchOptions?){
         self.imageWithURL(url, options: options, placeholderImage: nil, progressHandler: nil)
     }
     
-    func imageWithURL(url:NSURL, options: CJImageFetchOptions?, placeholderImage:UIImage?){
+    public func imageWithURL(url:NSURL, options: CJImageFetchOptions?, placeholderImage:UIImage?){
         self.imageWithURL(url, options: options, placeholderImage: placeholderImage, progressHandler: nil)
     }
     
-    func imageWithURL(url:NSURL, options: CJImageFetchOptions?, placeholderImage:UIImage?, progressHandler:ProgressHandler?){
+    public func imageWithURL(url:NSURL, options: CJImageFetchOptions?, placeholderImage:UIImage?, progressHandler:ProgressHandler?){
         self.imageWithURL(url, options: options, placeholderImage: placeholderImage, progressHandler: progressHandler, completionHandler: nil)
     }
     
-    func imageWithURL(url:NSURL, options:CJImageFetchOptions?, completionHandler:CompletionHandler?)
+    public func imageWithURL(url:NSURL, options:CJImageFetchOptions?, completionHandler:CompletionHandler?)
     {
         self.imageWithURL(url, options: options, placeholderImage: nil, progressHandler: nil, completionHandler: completionHandler)
     }
     
-    func imageWithURL(url:NSURL, options:CJImageFetchOptions?, progressHandler:ProgressHandler?, completionHandler:CompletionHandler?)
+    public func imageWithURL(url:NSURL, options:CJImageFetchOptions?, progressHandler:ProgressHandler?, completionHandler:CompletionHandler?)
     {
         self.imageWithURL(url, options: options, placeholderImage: nil, progressHandler: progressHandler, completionHandler: completionHandler)
     }
     
-    func imageWithURL(url:NSURL,
+    public func imageWithURL(url:NSURL,
         options:CJImageFetchOptions?,
         placeholderImage:UIImage?,
         progressHandler:ProgressHandler?,
@@ -75,7 +75,7 @@ extension UIImageView{
     }
     
     
-    func cancelImageFetch(){
+    public func cancelImageFetch(){
         if let operation = self.getFetchOperation(){
             CJImageFetchManager.sharedInstance.cancel(operation);
         }

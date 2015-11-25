@@ -8,7 +8,7 @@
 
 import UIKit
 
-enum CJImageDownloadPriority {
+public enum CJImageDownloadPriority {
 
     case DefaultPriority
     case LowPriority
@@ -16,7 +16,7 @@ enum CJImageDownloadPriority {
 
 }
 
-enum CJImageCachePolicy:Int {
+public enum CJImageCachePolicy:Int {
     case NoCache = 0
     case MemoryCache = 1
     case FileCache = 2
@@ -24,7 +24,7 @@ enum CJImageCachePolicy:Int {
 }
 
 
-class CJImageFetchOptions: NSObject {
+public class CJImageFetchOptions: NSObject {
     var priority:CJImageDownloadPriority = .DefaultPriority
     var cachePolicy:CJImageCachePolicy = .MemoryAndFileCache
     var shouldDecode: Bool = true

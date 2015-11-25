@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CJImageFetchManager: NSObject {
+public class CJImageFetchManager: NSObject {
     
     static let sharedInstance = CJImageFetchManager()
     
@@ -16,11 +16,11 @@ class CJImageFetchManager: NSObject {
     private static let ioQueueName = "com.jiecao.CJImageUtils.ImageFetchManager.ioQueue"
     private let ioQueue: dispatch_queue_t = dispatch_queue_create(ioQueueName, DISPATCH_QUEUE_CONCURRENT)
     
-    class func defaultKeyConverter(urlString:NSURL)->String?{
+    public class func defaultKeyConverter(urlString:NSURL)->String?{
         return urlString.absoluteString
     }
     
-    func cancelAll(){
+    public func cancelAll(){
         dispatch_barrier_async(self.ioQueue, { () -> Void in
             for (_, downloadOperation) in self.imageDownloadOperationQueue {
                 downloadOperation.cancel()
@@ -29,12 +29,12 @@ class CJImageFetchManager: NSObject {
         })
     }
     
-    func cancel(operation:CJImageFetchOperation){
+    public func cancel(operation:CJImageFetchOperation){
         operation.cancel();
         self.removeOperationForKey(operation.key!)
     }
     
-    func fetchOperationForKey(key: String) -> CJImageFetchOperation? {
+    public func fetchOperationForKey(key: String) -> CJImageFetchOperation? {
         var downloadOperation: CJImageFetchOperation?
         dispatch_sync(self.ioQueue, { () -> Void in
             downloadOperation = self.imageDownloadOperationQueue[key]
@@ -42,21 +42,21 @@ class CJImageFetchManager: NSObject {
         return downloadOperation
     }
     
-    func removeOperationForKey(key: String) {
+    public func removeOperationForKey(key: String) {
         dispatch_barrier_async(self.ioQueue, { () -> Void in
             self.imageDownloadOperationQueue.removeValueForKey(key)
             return
         })
     }
     
-    func addOperationForKey(key: String, operation:CJImageFetchOperation) {
+    public func addOperationForKey(key: String, operation:CJImageFetchOperation) {
         dispatch_barrier_async(self.ioQueue, { () -> Void in
             self.imageDownloadOperationQueue[key] = operation
             return
         })
     }
     
-    func retrieveImageFromUrl(url:NSURL, options:CJImageFetchOptions? = nil, completionHandler:((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)?, progressHandler:((receivedSize:Int64, expectedSize:Int64)->Void)?) -> CJImageFetchOperation? {
+    public func retrieveImageFromUrl(url:NSURL, options:CJImageFetchOptions? = nil, completionHandler:((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)?, progressHandler:((receivedSize:Int64, expectedSize:Int64)->Void)?) -> CJImageFetchOperation? {
         
         //NSLog(@"Documents Directory: %@", [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject]);
         

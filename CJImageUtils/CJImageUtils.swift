@@ -8,10 +8,10 @@
 
 import UIKit
 
-class CJImageUtils: NSObject {
+public class CJImageUtils: NSObject {
     private static let kPNGHeader: [UInt8] = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]
     private static let kPNGHeaderData:NSData = NSData(bytes: kPNGHeader, length: 8)
-    class func isPNG(image:UIImage, imageData:NSData? = nil) -> Bool {
+    public class func isPNG(image:UIImage, imageData:NSData? = nil) -> Bool {
         
         let alphaInfo = CGImageGetAlphaInfo(image.CGImage)
         let hasAlpha:Bool = !(alphaInfo == CGImageAlphaInfo.None ||
@@ -35,15 +35,15 @@ class CJImageUtils: NSObject {
     }
     
     
-    class func decodImage(image:UIImage) -> UIImage? {
+    public class func decodImage(image:UIImage) -> UIImage? {
         return decodImage(image, scale: image.scale)
     }
     
-    class func degreesToRadians(degrees: CGFloat) -> CGFloat {
+    public class func degreesToRadians(degrees: CGFloat) -> CGFloat {
         return degrees * CGFloat(M_PI) / CGFloat(180)
     }
     
-    class func decodImage(image:UIImage, scale: CGFloat) -> UIImage? {
+    public class func decodImage(image:UIImage, scale: CGFloat) -> UIImage? {
         UIGraphicsBeginImageContextWithOptions(image.size, true, 0)
         image.drawInRect(CGRectMake(0, 0, image.size.width, image.size.height))
         let decodedImage = UIGraphicsGetImageFromCurrentImageContext()
@@ -51,7 +51,7 @@ class CJImageUtils: NSObject {
         return decodedImage
     }
     
-    class func rotatedByDegrees(img: UIImage, degrees: CGFloat) -> UIImage {
+    public class func rotatedByDegrees(img: UIImage, degrees: CGFloat) -> UIImage {
         
         let rotatedViewBox = UIView(frame: CGRectMake(0,0, img.size.width, img.size.height))
         let t = CGAffineTransformMakeRotation(CJImageUtils.degreesToRadians(degrees))
@@ -73,19 +73,19 @@ class CJImageUtils: NSObject {
         return newImage;
     }
     
-    class func scaleImage(image: UIImage, height: CGFloat) -> CGSize {
+    public class func scaleImage(image: UIImage, height: CGFloat) -> CGSize {
         return CGSize(width: CGFloat(image.size.width) * (height / CGFloat(image.size.height != 0 ? image.size.height : 1)), height: height)
     }
     
-    class func scaleImage(image: UIImage, width: CGFloat) -> CGSize {
+    public class func scaleImage(image: UIImage, width: CGFloat) -> CGSize {
         return CGSize(width: width, height: CGFloat(image.size.height) * (width / CGFloat(image.size.width != 0 ? image.size.width : 1)))
     }
     
-    class func getAspectRatio(image: UIImage) -> CGFloat {
+    public class func getAspectRatio(image: UIImage) -> CGFloat {
         return image.size.height == 0 ? 0 : CGFloat(image.size.width) / CGFloat(image.size.height)
     }
     
-    class func roundImage(image:UIImage, radius:CGFloat) -> UIImage{
+    public class func roundImage(image:UIImage, radius:CGFloat) -> UIImage{
         UIGraphicsBeginImageContextWithOptions(CGSizeMake(radius * 2, radius * 2), false, 0)
         let context = UIGraphicsGetCurrentContext()
         CGContextSaveGState(context)
@@ -98,7 +98,7 @@ class CJImageUtils: NSObject {
         return  roundImage
     }
     
-    class func resizeImage(image:UIImage, size:CGSize) -> UIImage{
+    public class func resizeImage(image:UIImage, size:CGSize) -> UIImage{
         if size.width != image.size.width || size.height != image.size.height {
             UIGraphicsBeginImageContextWithOptions(CGSizeMake(size.width, size.height), false, 0)
             image.drawInRect(CGRectMake(0, 0, size.width, size.height))
