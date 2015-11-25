@@ -48,7 +48,7 @@ func imageWithURL(url:NSURL, options:CJImageFetchOptions?, placeholderImage:UIIm
 ```
 
 ### 通过CJImageFetchOpetions来设置下载和缓存选项
-在下载图像的时候，可以通过创建一个CJImageFetchOptions来对下载和缓存的各环节进行设置。可以设置的选项包括:
+在下载图像的时候，可以通过创建一个CJImageFetchOptions来对下载和缓存的各环节进行设置。可以设置的选项包括:  
 1.priority  
 负责图像下载队列的优先级。 可以设置为DefaultPriority， LowPriority和HighPriority。  
 2.cachePolicy  
@@ -142,6 +142,39 @@ func loadImageDataFromFile(key: String) -> NSData?
 ```
 其中在文件系统存取图像信息是异步的，通过传递closure来实现callback
 
+### 使用CJImageUtils的工具集
+CJImageUtils提供了一些图像处理常用的函数。包括：  
+
+1. 图像缩放
+
+```swift
+    class func resizeImage(image:UIImage, size:CGSize) -> UIImage   
+```
+
+2. 根据图像缩放到指定宽高后对应的高或者宽（保持宽高比)
+
+```swift
+    class func scaleImage(image: UIImage, height: CGFloat) -> CGSize
+    class func scaleImage(image: UIImage, width: CGFloat) -> CGSize
+```  
+3. 剪切图像成圆形图像
+
+```swift
+    class func roundImage(image:UIImage, radius:CGFloat) -> UIImage
+```  
+4.  将图像旋转指定角度  
+
+```swift
+    class func rotatedByDegrees(img: UIImage, degrees: CGFloat) -> UIImage
+```  
+5. 图像解压缩
+该函数的具体作用在前面已经介绍过。这里指列出函数的形式：
+
+```swift
+    class func decodImage(image:UIImage) -> UIImage?
+    class func decodImage(image:UIImage, scale: CGFloat) -> UIImage? 
+```  
+这些函数都是class function， 可以直接用CJImageUtils的class调用。  
 ## Licenses
 
 All source code is licensed under the [MIT License](https://raw.github.com/rs/SDWebImage/master/LICENSE).
