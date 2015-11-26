@@ -1,19 +1,20 @@
-CJImageUtils
+CJImageUtils [中文介绍](Readme_cn.md)
 =========
-CJImageUtils是一个轻量级的从网络下载图像并进行缓存的库。整个库是基于Swift实现的并且受到了SDWebImage的很多启发。CJImageUtils提供了对swift的原生的支持，不需要额外的配置来运行基于Objective-C的库。整个库包含了从网络获取图像并进行缓存的一系列功能和接口。具体包括：
+CJImageUtils is a light-weight framework implemented with Swift. It makes it easy to deal with fetching and cachine image data from network.  It provides:
 
-- 一个UIImageView extension来提供UIImageView从网络异步下载图像并缓存的接口
-- CJImageFetchManager来创建和管理图像异步下载的任务
-- CJImageFetchOperation提供图像异步网络下载的接口
-- CJImageCache提供缓存图片在内存和文件存储的接口
-- 一系列图像处理的工具集来图像进行缩放，剪切和在Background解压缩
+- An `UIImageView` extension to allow UIImageView to download image data from network and cache the data into memory cache and file sytem
+- A CJImageFetchManager class to create and manage asynchronous image download tasks
+- A CJImageFetchOperation class to download image asynchronously
+- A CJImageCache class to cache image data in memory cache and local file system
+- A serious of utilit methods to scale, crop and decode image
 
-安装
+
+Installation
 ------------
 
-### 用CocoaPods安装
+### CocoaPods (iOS 8+)
+You can use Cocoapods to install CJImageUtils adding it to your Podfile:
 
-可以通过CocoaPods来安装CJImageUtils
 
 #### Podfile
 ```
@@ -21,28 +22,27 @@ platform :ios, '8.0'
 use_frameworks!
 pod 'CJImageUtils'
 ```
-然后在使用时，直接Import Framework就可以了  
+In the project, you can import the CJImageUtils framework  
 
 ```swift
 import CJImageUtils
 ```  
 
-### 直接嵌入源代码
-CJImageUtils是一个开源库，可以从[这里](https://github.com/jie-cao/CJImageUtils)直接找到源代码并加入项目
+### Manually
+The source code from [here](https://github.com/jie-cao/CJImageUtils). You can manually add the source code into your project.  
 
-如何使用
+Usage
 ----------
 
-### 使用ImageView Extension
-导入的CJImageUtils库后，UIImageView提供了多个从NSURL异步下载图像并缓存的接口。一个简单的例子：
+### using ImageView Extension
+After import, UIImageView now has a series of functions to download image data from a url. A simple example of the usage:   
 
 ```swift
 let url = NSURL(string: "http://image.com/image.jpg")
 var imageView = UIImageView()
 imageView.imageWithURL(url!)
 ```
-
-所有的接口可以在CJImageViewExtension文件中找到。
+All the functions can be found at `CJImageExtension.swift` file. They provides the capability to pass closures add the progress handler and completion handler. The parameter `options: CJImageFecthOption?` is used config the downloading and caching behavior. It will be explained in the next section.
 
 ```swift
 func imageWithURL(url:NSURL)
@@ -54,20 +54,22 @@ func imageWithURL(url:NSURL, options:CJImageFetchOptions?, progressHandler:Progr
 func imageWithURL(url:NSURL, options:CJImageFetchOptions?, placeholderImage:UIImage?, progressHandler:ProgressHandler?, completionHandler:CompletionHandler?)
 ```
 
-### 通过CJImageFetchOpetions来设置下载和缓存选项
-在下载图像的时候，可以通过创建一个CJImageFetchOptions来对下载和缓存的各环节进行设置。可以设置的选项包括:  
+### Use CJImageFetchOpetions object to set options for image downloading and caching
+You can create a CJImageFetchOption object and pass in the methods mentioned in the previous sections. It is used to specify the settings for image download and cache task.You can specify the following settings:  
+  
 1.priority  
-负责图像下载队列的优先级。 可以设置为DefaultPriority， LowPriority和HighPriority。  
-2.cachePolicy  
-设置图像存储的策略。可以设置为NoCache，MemoryCache，FileCache和MemoryAndFileCache。对应不缓存，只在内存缓存和在内存和文件系统同时缓存。  
+The priority of the queue that is responsible for the downloading task. You can specify it as DefaultPriority， LowPriority or HighPriority. 
+  
+2.cachePolicy
+The policy for caching. You can specify NoCache，MemoryCache，FileCache or MemoryAndFileCache.    
 3.shouldDecode  
-图像是否需要解压缩。在图像从网络下载后，UIImageView需要对图像进行解压缩才能显示。这个过程一般是隐式的。并且会发生在UI主线程。可以通过开启这个选项来是图像在后台队列解压从而不阻塞UI主线程。  
+The flag to specify whether we should decode the image in the background thread before set it to the UIImageView in the UI thread. UIImageView will decode image on the UI thread if the image is not decoded in the global quue before. This will block the UI thread if there are too many images need to be decode in UI thread. The default option is true.  
+
 4.requestCachePolicy  
-CJImageUtils的图像下载是基于NSURLSession来实现的。这个选项对应的NSURLSessionConfiguration的requestCachePolicy选项。可以通过设置这个选项来设置下载时候session的缓存策略。
+The network download part of CJImageUtils is implemented based on NSURLSession. The option is equal to the requestCachePolicy in the NSURLSessionConfiguration class. You can specify different cache policy to save the network bandwith and improve your app performance. 
 
-
-### UITableView使用的例子
-UITableViewCell里面的ImageView可以直接用CJImageViewExtion提供的函数。 
+### Usage in UITableViewCell
+A simple example: 
 
 ```swift
 func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -85,32 +87,28 @@ func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexP
     }
     
 ```
-UICollectionViewCell也可以用类似的方法
-### 使用 Closure
-CJImageUtils定义下面两个Closure来提供下载图像过程中和完成后的callback
+Similar patterns can be applied to a UICollectionViewCell subclass that has UIImageView as a subview.  
+
+### Use Closure
+CJImageUtils provides the following two types of closures:
 
 ```swift
 public typealias ProgressHandler = ((receivedSize:Int64, expectedSize:Int64)->Void)
 public typealias CompletionHandler = ((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)
 ```
-在CJImageViewExtension中，下来函数可以使用Closure 
+A ProgressHandler closure can be passed as callback to track the progress of the image download task.   
+A CompletionHandler closue can be passed can be passed as the callback when the download operation complets.  
 
 ```swift
 func imageWithURL(url:NSURL, options:CJImageFetchOptions?, placeholderImage:UIImage?, progressHandler:ProgressHandler?)
 func imageWithURL(url:NSURL, options:CJImageFetchOptions?, completionHandler:CompletionHandler?)
 func imageWithURL(url:NSURL, options:CJImageFetchOptions?, progressHandler:ProgressHandler?, completionHandler:CompletionHandler?)
-func imageWithURL(url:NSURL, options:CJImageFetchOptions?,placeholderImage:UIImage?, progressHandler:ProgressHandler?, completionHandler:CompletionHandler?)
+func imageWithURL(url:NSURL, options:CJImageFetchOptions?, placeholderImage:UIImage?, progressHandler:ProgressHandler?, completionHandler:CompletionHandler?)
 ```
 
-### 使用 CJImageFetchManager
-有时候下载完图像后，不需要直接传递给UIImageView显示并且需要对下载图像的任务进行管理。CJImageUtils提供了CJImageFetchManger单例来创建并管理图像异步下载并缓存的任务。 
-
-```swift
-func retrieveImageFromUrl(url:NSURL, options:CJImageFetchOptions? = nil, completionHandler:((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)?, progressHandler:((receivedSize:Int64, expectedSize:Int64)->Void)?) -> CJImageFetchOperation?
-```       
-该函数会返回一个CJImageOperation的实例。你可以保持一个实例，从而对一个下载任务进行管理，例如在某些情况下取消下载。  
-创建一个图像异步下载任务:  
-
+### Use CJImageFetchManager
+You can use a CJImageFetchManager singleton instance to manage the image download operations. You can use it to create a image download operation. You can cancel a specific image download opation or cancel all the operations.  
+To create an image download task:  
 ```swift
 if let operation = CJImageFetchManager.sharedInstance.retrieveImageFromUrl(url, options: options, completionHandler:{(image:UIImage?, data:NSData?, error:NSError?,finished:Bool) -> in
 	// your completion handler
@@ -121,24 +119,29 @@ progressHandler: {(receivedSize:Int64, expectedSize:Int64) in
 	// save the operation for future management
 }
 ```
-取消一个图像下载任务  
+
+The function returns a CJImageOperation object. You can pass this object to CJImageFetchManager singleton instance to cancel the download operation.  
+To cancel an image download task:  
 
 ```swift
 CJImageFetchManager.sharedInstance.cancelOperation(operation)
 
 ```
-这里的Operation就是之前创建下载任务是得到的CJImageOperation的实例
+To cancel all the existing image download tasks:  
 
-### 使用 CJImageFetchOperation创建图像下载缓存任务  
-CJImageUtils提供一个CJImageFetchOperation来作为图像下载缓存的任务。可以直接创建CJImageFetchOpeation的实例来创建图像下载和缓存的任务。
+```swift
+CJImageFetchManager.sharedInstance.cancelAll()
+```
 
+### Usre CJImageFetchOperation to create a image download task
+To create a image download task by creating a CJImageFetchOperation instance:
 ```swift
 init(url:NSURL, options:CJImageFetchOptions, progressHandler:((receivedSize:Int64, expectedSize:Int64)->Void)?, completionHandler:((image:UIImage?, data:NSData?, error:NSError?, finished:Bool)->Void)?)
 ```
-任务创建后不会立即开始下载。需要调用start()来手动开始任务下载。
+After the instance is created, it will start the download immediately. You can call the `start()` method to start the download task.
 
-### 使用CJImageCache
-CJImageUtils实现了一个CJImageCache的单例来异步缓存图像。该实例提供一系列函数来实现在内存或者文件系统的存储和读取。
+### Use CJImageCache
+CJImageUtils implemented a CJImageCache singletong to cache image data asynchronously. It provides functions to store/fetch image data from memory cache or local file system.  
 
 ```swift
 func storeImage(image:UIImage, key:String, imageData:NSData? = nil, cachePolicy:CJImageCachePolicy, completionHandler:(()-> Void)?)-> Void
@@ -147,41 +150,42 @@ func retrieveImageFromMemoryCache(key: String) -> UIImage?
 func loadImageDataFromFile(key: String) -> NSData?    
 
 ```
-其中在文件系统存取图像信息是异步的，通过传递closure来实现callback
+The store and fetch operations are asynchronous. You can pass the closure as the completionHandler parameter as the callback when the tasks are completed.
 
-### 使用CJImageUtils的工具集
-CJImageUtils提供了一些图像处理常用的函数。包括：  
+The ```cachePolicy:CJImageCachePolicy``` paremeter is used to specify the cache policy. You can choose to cache the image data on memory cache, local file system or both. 
 
-1. 图像缩放
+### Use CJImageUtils utility functions
+CJImageUtils provides a series of functions for processing image data. The feature those functions provide are commonly asked. They include:
+
+1. Scale Image
 
 ```swift
     class func resizeImage(image:UIImage, size:CGSize) -> UIImage   
 ```
 
-2. 根据图像缩放到指定宽高后对应的高或者宽（保持宽高比)
+2. Get the Image width or height according to the scaled height/width  
 
 ```swift
     class func scaleImage(image: UIImage, height: CGFloat) -> CGSize
     class func scaleImage(image: UIImage, width: CGFloat) -> CGSize
 ```  
-3. 剪切图像成圆形图像
+3. Crop image to a round image
 
 ```swift
     class func roundImage(image:UIImage, radius:CGFloat) -> UIImage
 ```  
-4.  将图像旋转指定角度  
+4.  Rotate a image 
 
 ```swift
     class func rotatedByDegrees(img: UIImage, degrees: CGFloat) -> UIImage
 ```  
-5. 图像解压缩
-该函数的具体作用在前面已经介绍过。这里指列出函数的形式：
+5. Decode image at background thread
 
 ```swift
     class func decodImage(image:UIImage) -> UIImage?
     class func decodImage(image:UIImage, scale: CGFloat) -> UIImage? 
 ```  
-这些函数都是class function， 可以直接用CJImageUtils的class调用。  
+These methods are class functions. They can be invoked from CJImageUtils class directly.
 ## Licenses
 
 All source code is licensed under the [MIT License](https://raw.github.com/rs/SDWebImage/master/LICENSE).
