@@ -13,7 +13,7 @@ Installation
 ------------
 
 ### CocoaPods (iOS 8+)
-You can use Cocoapods to install CJImageUtils adding it to your Podfile:
+You can use CocoaPods to install CJImageUtils adding it to your Podfile:
 
 
 #### Podfile
